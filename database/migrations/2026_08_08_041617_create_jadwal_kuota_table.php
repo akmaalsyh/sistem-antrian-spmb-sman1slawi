@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('jadwal_kuota', function (Blueprint $table) {
             $table->id();
+            $table->date('tanggal')->unique();
+            $table->integer('kuota_maksimal')->default(100);
+            $table->integer('terisi')->default(0);
+            $table->boolean('status_buka')->default(true); // true = buka/aktif, false = libur/tutup
             $table->timestamps();
         });
     }
