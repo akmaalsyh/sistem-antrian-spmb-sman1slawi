@@ -15,7 +15,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'nisn', // Ganti email jadi nisn
+        'nisn',
+        'role',
         'password',
     ];
 
@@ -26,6 +27,4 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
-    // Hapus bagian protected $casts karena email_verified_at sudah tidak ada
 }

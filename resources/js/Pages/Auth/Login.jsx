@@ -1,17 +1,27 @@
-import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
+        nisn: '',
         password: '',
+        target_role: 'siswa',
         remember: false,
     });
+
+    // Handle Input NISN Khusus Angka & Maksimal 10 Digit
+    const handleNisnChange = (e) => {
+        const value = e.target.value;
+        // Hanya ambil karakter angka 0-9
+        const numericValue = value.replace(/\D/g, '');
+        // Batasi maksimal 10 digit angka
+        if (numericValue.length <= 10) {
+            setData('nisn', numericValue);
+        }
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -22,80 +32,108 @@ export default function Login({ status, canResetPassword }) {
     };
 
     return (
-        <GuestLayout>
-            <Head title="Log in" />
+        <AuthLayout title="Masuk Akun Siswa" subtitle="PORTAL RESMI SPMB 2027/2028">
+            <Head title="Masuk Siswa - Portal SPMB SMAN 1 Slawi" />
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800">
                     {status}
                 </div>
             )}
 
-            <form onSubmit={submit}>
-                {/* Bagian Input NISN (Pengganti Email) */}
-            <div>
-                <InputLabel htmlFor="nisn" value="NISN Siswa" />
+            <form onSubmit={submit} className="space-y-5">
+                <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                        <InputLabel htmlFor="nisn" value="NISN (10 Digit Angka)" className="text-slate-700 font-extrabold text-xs uppercase tracking-wider" />
+                        <span className={`text-[11px] font-bold ${data.nisn.length === 10 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                            {data.nisn.length}/10 Digit
+                        </span>
+                    </div>
 
-                <TextInput
-                    id="nisn"
-                    type="text"
-                    name="nisn"
-                    value={data.nisn}
-                    className="mt-1 block w-full"
-                    autoComplete="username"
-                    isFocused={true}
-                    onChange={(e) => setData('nisn', e.target.value)}
-                />
+                    <TextInput
+                        id="nisn"
+                        type="text"
+                        name="nisn"
+                        value={data.nisn}
+                        maxLength={10}
+                        inputMode="numeric"
+                        className="mt-1 block w-full rounded-2xl border-slate-200 bg-slate-50/50 shadow-xs focus:border-blue-600 focus:bg-white focus:ring-blue-600 py-3 px-4 text-slate-800 font-bold text-sm placeholder-slate-400 tracking-wider transition"
+                        autoComplete="username"
+                        isFocused={true}
+                        placeholder="Masukkan 10 digit NISN Anda"
+                        onChange={handleNisnChange}
+                        required
+                    />
 
-                <InputError message={errors.nisn} className="mt-2" />
-            </div>
+                    <InputError message={errors.nisn} className="mt-1.5 text-xs text-rose-600 font-semibold" />
+                </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                        <InputLabel htmlFor="password" value="Password Akun" className="text-slate-700 font-extrabold text-xs uppercase tracking-wider" />
+                    </div>
 
                     <TextInput
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full rounded-2xl border-slate-200 bg-slate-50/50 shadow-xs focus:border-blue-600 focus:bg-white focus:ring-blue-600 py-3 px-4 text-slate-800 font-bold text-sm placeholder-slate-400 transition"
                         autoComplete="current-password"
+                        placeholder="Masukkan password Anda"
                         onChange={(e) => setData('password', e.target.value)}
+                        required
                     />
 
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="mt-1.5 text-xs text-rose-600 font-semibold" />
                 </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
+                <div className="pt-1 flex items-center justify-between">
+                    <label className="flex items-center cursor-pointer group">
+                        <input
+                            type="checkbox"
                             name="remember"
                             checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
+                            onChange={(e) => setData('remember', e.target.checked)}
+                            className="rounded-lg border-slate-300 text-blue-600 shadow-xs focus:ring-blue-600 w-4 h-4"
                         />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
+                        <span className="ms-2 text-xs text-slate-600 font-semibold group-hover:text-blue-700 transition">
+                            Ingat sesi saya
                         </span>
                     </label>
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+                <div className="pt-2">
+                    <button
+                        type="submit"
+                        disabled={processing}
+                        className="w-full py-3.5 px-6 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-black rounded-2xl shadow-lg shadow-blue-700/25 hover:shadow-xl hover:shadow-blue-700/40 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition transform hover:-translate-y-0.5 duration-200 disabled:opacity-50 text-sm"
+                    >
+                        {processing ? 'Memproses Masuk...' : 'Masuk Akun'}
+                    </button>
+                </div>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                <div className="mt-6 pt-5 border-t border-slate-100 text-center space-y-3">
+                    <p className="text-xs text-slate-500 font-medium">
+                        Belum memiliki akun pendaftaran?{' '}
+                        <Link
+                            href={route('register')}
+                            className="font-bold text-blue-700 hover:text-blue-900 underline underline-offset-4 transition"
+                        >
+                            Daftar Akun Baru
+                        </Link>
+                    </p>
+
+                    <div>
+                        <Link
+                            href="/"
+                            className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-700 bg-slate-100 hover:bg-blue-50 px-4 py-2 rounded-xl transition"
+                        >
+                            <span>← Kembali ke Beranda</span>
+                        </Link>
+                    </div>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

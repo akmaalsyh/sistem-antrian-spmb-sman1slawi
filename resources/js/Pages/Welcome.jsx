@@ -1,360 +1,767 @@
 import { Head, Link } from '@inertiajs/react';
+import LogoSmansawi from '@/Components/LogoSmansawi';
+import { useEffect } from 'react';
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
-    const handleImageError = () => {
-        document
-            .getElementById('screenshot-container')
-            ?.classList.add('!hidden');
-        document.getElementById('docs-card')?.classList.add('!row-span-1');
-        document
-            .getElementById('docs-card-content')
-            ?.classList.add('!flex-row');
-        document.getElementById('background')?.classList.add('!hidden');
+export default function Welcome({ auth }) {
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        // Hapus class agar animasi dapat dipicu kembali saat dikunjungi ulang/dilihat lagi
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            },
+            { threshold: 0.15 }
+        );
+
+        const elements = document.querySelectorAll('.reveal-on-scroll');
+        elements.forEach((el) => observer.observe(el));
+
+        return () => {
+            elements.forEach((el) => observer.unobserve(el));
+        };
+    }, []);
+
+    const handleNavClick = (e, targetId) => {
+        e.preventDefault();
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            // Re-trigger animasi pada bagian target saat diklik
+            const revealChilds = targetElement.querySelectorAll('.reveal-on-scroll');
+            targetElement.classList.remove('is-visible');
+            revealChilds.forEach((child) => child.classList.remove('is-visible'));
+
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+
+            setTimeout(() => {
+                targetElement.classList.add('is-visible');
+                revealChilds.forEach((child) => child.classList.add('is-visible'));
+            }, 300);
+        }
     };
+
+    const linimasa = [
+        { tahap: '1', tanggal: '18 Mei 2027', agenda: 'Pengumuman SPMB', desc: 'Pengumuman resmi juknis & syarat SPMB SMAN 1 Slawi TA 2027/2028.' },
+        { tahap: '2', tanggal: '3–12 Juni 2027', agenda: 'Pengajuan Akun', desc: 'Pembuatan & pengajuan akun calon murid baru secara online.' },
+        { tahap: '3', tanggal: '4–13 Juni 2027', agenda: 'Verifikasi & Aktivasi Akun', desc: 'Verifikasi berkas fisik dan aktivasi akun pendaftaran.' },
+        { tahap: '4', tanggal: '14 Juni 2027', agenda: 'Sinkronisasi Data', desc: 'Validasi dan penguncian data pendaftar secara otomatis.' },
+        { tahap: '5', tanggal: '15–18 Juni 2027', agenda: 'Pendaftaran & Pilih Sekolah', desc: 'Pemilihan jalur & pilihan sekolah SMA tujuan pendaftaran.' },
+        { tahap: '6', tanggal: '19–20 Juni 2027', agenda: 'Evaluasi & Masa Tenang', desc: 'Pemeringkatan jurnal seleksi dan penutupan perubahan.' },
+        { tahap: '7', tanggal: '21 Juni 2027', agenda: 'Pengumuman Hasil Utama', desc: 'Pengumuman resmi calon siswa yang lolos seleksi utama.' },
+        { tahap: '8', tanggal: '22–25 Juni 2027', agenda: 'Daftar Ulang Utama', desc: 'Registrasi ulang berkas fisik bagi peserta kelulusan utama.' },
+        { tahap: '9', tanggal: '26 Juni 2027', agenda: 'Pengumuman Cadangan', desc: 'Pengumuman kuota tersisa dan daftar peserta cadangan.' },
+        { tahap: '10', tanggal: '29–30 Juni 2027', agenda: 'Daftar Ulang Cadangan', desc: 'Daftar ulang bagi peserta didik status cadangan.' },
+        { tahap: '11', tanggal: '15 Juli 2027', agenda: 'Awal TA 2027/2028', desc: 'Hari pertama masuk sekolah dan pembukaan MPLS.' },
+    ];
+
+    const jalurSeleksi = [
+        {
+            nama: '1. Jalur Domisili',
+            kuota: 'Paling sedikit 33%',
+            desc: 'Berdasarkan jarak domisili tempat tinggal terdekat dengan lokasi SMAN 1 Slawi.',
+            badgeBg: 'bg-blue-600'
+        },
+        {
+            nama: '2. Jalur Afirmasi',
+            kuota: 'Paling sedikit 32%',
+            desc: 'Peruntukan khusus bagi: Penyandang Disabilitas (maks. 2%), Keluarga Ekonomi Tidak Mampu, Anak Panti (maks. 3%), dan ATS / Anak Putus Sekolah (maks. 2%).',
+            badgeBg: 'bg-emerald-600'
+        },
+        {
+            nama: '3. Jalur Prestasi',
+            kuota: 'Paling sedikit 30%',
+            desc: 'Penilaian berdasarkan akumulasi Prestasi Akademik, Prestasi Non-Akademik, serta Keaktifan Pengurus / Ketua Organisasi.',
+            badgeBg: 'bg-purple-600'
+        },
+        {
+            nama: '4. Jalur Mutasi',
+            kuota: 'Paling banyak 5%',
+            desc: 'Perpindahan tugas orang tua/wali dari luar daerah, termasuk di dalamnya khusus untuk anak guru.',
+            badgeBg: 'bg-amber-600'
+        },
+    ];
+
+    const dokumenReq = [
+        'Kartu Keluarga (Asli + Fotokopi)',
+        'Surat Keterangan Rapor Semester 1–5 (Asli)',
+        'Akta Kelahiran (Asli + Fotokopi)',
+        'Surat Keterangan Lulus (Asli)',
+        'Buku Rapor (Asli)',
+        'Sertifikat Hasil TKA (Asli)',
+        'Sertifikat Prestasi (jika memiliki)',
+    ];
+
+    const mapelPenilaian = [
+        'Pendidikan Agama & Budi Pekerti',
+        'PPKn',
+        'Bahasa Indonesia',
+        'Matematika',
+        'IPA',
+        'IPS',
+        'Bahasa Inggris',
+    ];
+
+    const narahubung = [
+        { nama: 'Lulus Wijayanto, S.Pd', telp: '0815-7517-5363' },
+        { nama: 'Rusmawati, S.Pd', telp: '0856-4088-2285' },
+        { nama: 'Afgriz Prasetiyawati, S.Pd', telp: '0812-2503-0765' },
+        { nama: 'Dyah Ayu Triana, S.Si', telp: '0852-2634-7402' },
+    ];
 
     return (
         <>
-            <Head title="Welcome" />
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-                <img
-                    id="background"
-                    className="absolute -left-20 top-0 max-w-[877px]"
-                    src="https://laravel.com/assets/img/welcome/background.svg"
-                />
-                <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                    <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                            <div className="flex lg:col-start-2 lg:justify-center">
-                                <svg
-                                    className="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]"
-                                    viewBox="0 0 62 65"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
+            <Head title="Portal Resmi SPMB 2027/2028 - SMAN 1 Slawi" />
+
+            <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-blue-600 selection:text-white scroll-smooth">
+                
+                {/* Header Navbar Biru Modern Interaktif */}
+                <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition duration-300">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex items-center justify-between h-20">
+                            
+                            {/* Logo Asli SMAN 1 Slawi */}
+                            <a href="#" className="flex items-center gap-3.5 group shrink-0">
+                                <div className="transition transform group-hover:scale-105 duration-200">
+                                    <LogoSmansawi className="w-12 h-12" />
+                                </div>
+                                <div>
+                                    <h1 className="font-black text-slate-900 text-lg sm:text-xl tracking-tight leading-tight group-hover:text-blue-700 transition">
+                                        SMA NEGERI 1 SLAWI
+                                    </h1>
+                                    <p className="text-xs text-blue-600 font-bold uppercase tracking-wider">PORTAL RESMI SPMB 2027/2028</p>
+                                </div>
+                            </a>
+
+                            {/* Navigasi Tengah (Navigasi Beranda Tanpa Ikon) */}
+                            <nav className="hidden lg:flex items-center gap-1 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 text-xs font-extrabold text-slate-600">
+                                <a
+                                    href="#alur-pendaftaran"
+                                    onClick={(e) => handleNavClick(e, 'alur-pendaftaran')}
+                                    className="px-4 py-2 rounded-xl hover:text-blue-700 hover:bg-white hover:shadow-xs transition duration-200"
                                 >
-                                    <path
-                                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
-                            </div>
-                            <nav className="-mx-3 flex flex-1 justify-end">
-                                {auth.user ? (
+                                    Alur Pendaftaran
+                                </a>
+                                <a
+                                    href="#jalur-seleksi"
+                                    onClick={(e) => handleNavClick(e, 'jalur-seleksi')}
+                                    className="px-4 py-2 rounded-xl hover:text-blue-700 hover:bg-white hover:shadow-xs transition duration-200"
+                                >
+                                    Jalur Seleksi
+                                </a>
+                                <a
+                                    href="#persyaratan-berkas"
+                                    onClick={(e) => handleNavClick(e, 'persyaratan-berkas')}
+                                    className="px-4 py-2 rounded-xl hover:text-blue-700 hover:bg-white hover:shadow-xs transition duration-200"
+                                >
+                                    Persyaratan Berkas
+                                </a>
+                                <a
+                                    href="#kontak-informasi"
+                                    onClick={(e) => handleNavClick(e, 'kontak-informasi')}
+                                    className="px-4 py-2 rounded-xl hover:text-blue-700 hover:bg-white hover:shadow-xs transition duration-200"
+                                >
+                                    Kontak &amp; Info
+                                </a>
+                            </nav>
+
+                            {/* Tombol Header Interaktif */}
+                            <div className="flex items-center gap-3 shrink-0">
+                                {auth?.user ? (
                                     <Link
-                                        href={route('dashboard')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                        href={route('etiket')}
+                                        className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition duration-200"
                                     >
-                                        Dashboard
+                                        Buka E-Tiket Anda →
                                     </Link>
                                 ) : (
                                     <>
                                         <Link
                                             href={route('login')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                            className="px-5 py-2.5 rounded-xl text-slate-700 hover:text-blue-700 hover:bg-blue-50 font-bold text-sm transition duration-200 border border-slate-200 hover:border-blue-300"
                                         >
-                                            Log in
+                                            Masuk
                                         </Link>
                                         <Link
                                             href={route('register')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold text-sm shadow-md shadow-blue-700/25 hover:shadow-lg hover:shadow-blue-700/40 transition transform hover:-translate-y-0.5 duration-200"
                                         >
-                                            Register
+                                            Daftar
                                         </Link>
                                     </>
                                 )}
-                            </nav>
-                        </header>
+                            </div>
 
-                        <main className="mt-6">
-                            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-                                <a
-                                    href="https://laravel.com/docs"
-                                    id="docs-card"
-                                    className="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div
-                                        id="screenshot-container"
-                                        className="relative flex w-full flex-1 items-stretch"
+                        </div>
+                    </div>
+                </header>
+
+                {/* Hero Section Biru Modern Gradasi Interaktif */}
+                <section className="relative py-16 sm:py-24 bg-gradient-to-br from-blue-950 via-blue-800 to-blue-600 text-white overflow-hidden shadow-xl">
+                    <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px] animate-pulse" />
+                    
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div className="max-w-3xl mx-auto text-center space-y-6 reveal-on-scroll">
+                            
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-blue-100 text-xs font-bold uppercase tracking-wider animate-bounce">
+                                <span>✨ Penerimaan Murid Baru Tahun Ajaran 2027 / 2028</span>
+                            </div>
+
+                            <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                                Sistem Penerimaan Murid Baru (SPMB) <br />
+                                <span className="text-sky-300 drop-shadow">SMA Negeri 1 Slawi</span>
+                            </h2>
+
+                            <p className="text-blue-100 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+                                SMAN 1 Slawi resmi membuka pendaftaran secara daring melalui platform SPMB Jateng dengan mengedepankan prinsip transparan, akuntabel, dan bebas dari praktik titip maupun intervensi (No Titip, No Jastip).
+                            </p>
+
+                            <div className="pt-1">
+                                <span className="inline-block bg-white/10 text-sky-200 text-xs sm:text-sm font-extrabold px-5 py-2.5 rounded-xl backdrop-blur-md border border-white/20 tracking-widest uppercase hover:bg-white/20 transition cursor-default">
+                                    Berkarakter, Berprestasi, Unggul, Terdepan!
+                                </span>
+                            </div>
+
+                            {/* Tombol Hero */}
+                            <div className="pt-6 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                {auth?.user ? (
+                                    <Link
+                                        href={route('etiket')}
+                                        className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-blue-900 hover:bg-blue-50 font-black text-base shadow-xl shadow-blue-950/30 transition transform hover:-translate-y-1 hover:scale-105 duration-200"
                                     >
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-light.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden"
-                                            onError={handleImageError}
-                                        />
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-dark.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="hidden aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block"
-                                        />
-                                        <div className="absolute -bottom-16 -left-16 h-40 w-[calc(100%+8rem)] bg-gradient-to-b from-transparent via-white to-white dark:via-zinc-900 dark:to-zinc-900"></div>
-                                    </div>
-
-                                    <div className="relative flex items-center gap-6 lg:items-end">
-                                        <div
-                                            id="docs-card-content"
-                                            className="flex items-start gap-6 lg:flex-col"
+                                        Buka E-Tiket Anda →
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href={route('register')}
+                                            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-blue-900 hover:bg-blue-50 font-black text-base shadow-xl shadow-blue-950/30 transition transform hover:-translate-y-1 hover:scale-105 duration-200"
                                         >
-                                            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                                <svg
-                                                    className="size-5 sm:size-6"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="M23 4a1 1 0 0 0-1.447-.894L12.224 7.77a.5.5 0 0 1-.448 0L2.447 3.106A1 1 0 0 0 1 4v13.382a1.99 1.99 0 0 0 1.105 1.79l9.448 4.728c.14.065.293.1.447.1.154-.005.306-.04.447-.105l9.453-4.724a1.99 1.99 0 0 0 1.1-1.789V4ZM3 6.023a.25.25 0 0 1 .362-.223l7.5 3.75a.251.251 0 0 1 .138.223v11.2a.25.25 0 0 1-.362.224l-7.5-3.75a.25.25 0 0 1-.138-.22V6.023Zm18 11.2a.25.25 0 0 1-.138.224l-7.5 3.75a.249.249 0 0 1-.329-.099.249.249 0 0 1-.033-.12V9.772a.251.251 0 0 1 .138-.224l7.5-3.75a.25.25 0 0 1 .362.224v11.2Z"
-                                                    />
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="m3.55 1.893 8 4.048a1.008 1.008 0 0 0 .9 0l8-4.048a1 1 0 0 0-.9-1.785l-7.322 3.706a.506.506 0 0 1-.452 0L4.454.108a1 1 0 0 0-.9 1.785H3.55Z"
-                                                    />
-                                                </svg>
-                                            </div>
-
-                                            <div className="pt-3 sm:pt-5 lg:pt-0">
-                                                <h2 className="text-xl font-semibold text-black dark:text-white">
-                                                    Documentation
-                                                </h2>
-
-                                                <p className="mt-4 text-sm/relaxed">
-                                                    Laravel has wonderful
-                                                    documentation covering every
-                                                    aspect of the framework.
-                                                    Whether you are a newcomer
-                                                    or have prior experience
-                                                    with Laravel, we recommend
-                                                    reading our documentation
-                                                    from beginning to end.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <svg
-                                            className="size-6 shrink-0 stroke-[#FF2D20]"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth="1.5"
+                                            Daftar Akun NISN
+                                        </Link>
+                                        <Link
+                                            href={route('login')}
+                                            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-blue-950/50 hover:bg-blue-950/70 text-white font-bold text-base border border-white/20 backdrop-blur-md transition transform hover:-translate-y-1 duration-200"
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                            />
-                                        </svg>
-                                    </div>
-                                </a>
+                                            Masuk Ke Akun Siswa
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
 
-                                <a
-                                    href="https://laracasts.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+                        </div>
+                    </div>
+                </section>
+
+                {/* ALUR LINIMASA: ELEMEN PANAH PHYSICAL DI SELA-SELA KOTAK + PANAH BEBAWAH BESAR NONGKRONG RAPI */}
+                <section id="alur-pendaftaran" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
+                        <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                            ALUR PELAKSANAAN DENGAN PANAH ALUR PRESISI
+                        </span>
+                        <h3 className="text-3xl font-black text-slate-900 tracking-tight mt-3">Alur Pendaftaran SPMB Online</h3>
+                        <p className="text-sm text-slate-500 mt-2">Urutan langkah demi langkah yang terhubung presisi antar tahapan.</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        
+                        {/* BARIS 1: Kotak 1 -> Kotak 2 -> Kotak 3 */}
+                        <div className="flex flex-col lg:flex-row items-center justify-between gap-3 reveal-on-scroll reveal-delay-100">
+                            
+                            {/* Kotak 1 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        1
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 18 Mei 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Pengumuman SPMB</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[0].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* ELEMEN PANAH KANAN 1 -> 2 (Fisik di sela-sela antar kotak) */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 text-blue-600">
+                                <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                                </svg>
+                            </div>
+
+                            {/* Kotak 2 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        2
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 3–12 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Pengajuan Akun</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[1].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* ELEMEN PANAH KANAN 2 -> 3 (Fisik di sela-sela antar kotak) */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 text-blue-600">
+                                <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                                </svg>
+                            </div>
+
+                            {/* Kotak 3 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        3
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 4–13 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Verifikasi Berkas</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[2].desc}</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {/* PANAH BELOK KEBAWAH BESAR DARI KOTAK 3 KE KOTAK 4 */}
+                        <div className="hidden lg:flex justify-end pr-28 py-2">
+                            <div className="flex flex-col items-center text-blue-600">
+                                <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-blue-600 rounded-full"></div>
+                                <svg className="w-10 h-10 text-blue-600 animate-bounce -mt-2 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* BARIS 2: Kotak 6 <- Kotak 5 <- Kotak 4 */}
+                        <div className="flex flex-col lg:flex-row-reverse items-center justify-between gap-3 reveal-on-scroll reveal-delay-200">
+                            
+                            {/* Kotak 4 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        4
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 14 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Sinkronisasi Data</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[3].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* ELEMEN PANAH KIRI 4 <- 5 (Fisik di sela-sela antar kotak) */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 text-blue-600">
+                                <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 20l1.41-1.41L7.83 13H20v-2H7.83l5.58-5.59L12 4l-8 8z" />
+                                </svg>
+                            </div>
+
+                            {/* Kotak 5 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        5
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 15–18 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Pendaftaran Online</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[4].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* ELEMEN PANAH KIRI 5 <- 6 (Fisik di sela-sela antar kotak) */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 text-blue-600">
+                                <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 20l1.41-1.41L7.83 13H20v-2H7.83l5.58-5.59L12 4l-8 8z" />
+                                </svg>
+                            </div>
+
+                            {/* Kotak 6 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        6
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 19–20 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Evaluasi & Masa Tenang</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[5].desc}</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {/* PANAH BELOK KEBAWAH BESAR DARI KOTAK 6 KE KOTAK 7 */}
+                        <div className="hidden lg:flex justify-start pl-28 py-2">
+                            <div className="flex flex-col items-center text-blue-600">
+                                <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-blue-600 rounded-full"></div>
+                                <svg className="w-10 h-10 text-blue-600 animate-bounce -mt-2 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* BARIS 3: Kotak 7 -> Kotak 8 -> Kotak 9 */}
+                        <div className="flex flex-col lg:flex-row items-center justify-between gap-3 reveal-on-scroll reveal-delay-300">
+                            
+                            {/* Kotak 7 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-emerald-600/30 group-hover:scale-110 transition">
+                                        7
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 21 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Pengumuman Utama</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[6].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* ELEMEN PANAH KANAN 7 -> 8 (Fisik di sela-sela antar kotak) */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 text-blue-600">
+                                <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                                </svg>
+                            </div>
+
+                            {/* Kotak 8 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        8
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 22–25 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Daftar Ulang Utama</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[7].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* ELEMEN PANAH KANAN 8 -> 9 (Fisik di sela-sela antar kotak) */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 text-blue-600">
+                                <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                                </svg>
+                            </div>
+
+                            {/* Kotak 9 */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-amber-500/30 group-hover:scale-110 transition">
+                                        9
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 26 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Pengumuman Cadangan</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[8].desc}</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {/* PANAH BELOK KEBAWAH BESAR DARI KOTAK 9 KE KOTAK 10 */}
+                        <div className="hidden lg:flex justify-end pr-28 py-2">
+                            <div className="flex flex-col items-center text-blue-600">
+                                <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-blue-600 rounded-full"></div>
+                                <svg className="w-10 h-10 text-blue-600 animate-bounce -mt-2 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* BARIS 4: Kotak 11 <- Kotak 10 (PERSIS FLEX-1 DENGAN ELEMEN PANAH DI SELA-SELA MURNI & BESAR KOTAK 100% SAMA) */}
+                        <div className="flex flex-col lg:flex-row-reverse items-center justify-between gap-3 reveal-on-scroll reveal-delay-400">
+                            
+                            {/* Kotak 10 (BERADA TEPAT DIBAWAH KOTAK 9) */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-white border-2 border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-500 transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center mb-3 shadow-md shadow-blue-600/30 group-hover:scale-110 transition">
+                                        10
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full block w-fit mb-2">
+                                        📅 29–30 Juni 2027
+                                    </span>
+                                    <h4 className="font-black text-slate-900 text-lg mb-1">Daftar Ulang Cadangan</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">{linimasa[9].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* ELEMEN PANAH KIRI 10 <- 11 (Fisik di sela-sela antar kotak) */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 text-blue-600">
+                                <svg className="w-8 h-8 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 20l1.41-1.41L7.83 13H20v-2H7.83l5.58-5.59L12 4l-8 8z" />
+                                </svg>
+                            </div>
+
+                            {/* Kotak 11 (Awal TA 2027/2028 - BERADA DI TENGAH BARIS 4, UKURAN FLEX-1 SAMA 100% PERSIS KOTAK LAIN) */}
+                            <div className="flex-1 w-full p-6 rounded-3xl bg-gradient-to-br from-blue-700 to-indigo-800 text-white border-2 border-blue-600 shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 duration-300 group flex flex-col justify-between min-h-[190px]">
+                                <div>
+                                    <div className="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 font-black text-base flex items-center justify-center mb-3 shadow-md shadow-amber-400/30 group-hover:scale-110 transition">
+                                        11
+                                    </div>
+                                    <span className="text-[11px] font-extrabold text-amber-300 bg-white/10 px-2.5 py-1 rounded-full block w-fit mb-2 border border-white/20">
+                                        🎉 15 Juli 2027
+                                    </span>
+                                    <h4 className="font-black text-white text-lg mb-1">Awal Tahun Ajaran Baru</h4>
+                                    <p className="text-xs text-blue-100 leading-relaxed">{linimasa[10].desc}</p>
+                                </div>
+                            </div>
+
+                            {/* Spacer Kosong Flex-1 Ditambah Dummy Arrow Spacer Agar Pembagian Ukuran Lebar Flex-1 Kotak 10 & 11 100% Persis Dengan Kotak Baris 1-3 */}
+                            <div className="hidden lg:flex items-center justify-center shrink-0 px-2 opacity-0 pointer-events-none">
+                                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 20l1.41-1.41L7.83 13H20v-2H7.83l5.58-5.59L12 4l-8 8z" />
+                                </svg>
+                            </div>
+                            <div className="flex-1 hidden lg:block"></div>
+
+                        </div>
+
+                    </div>
+                </section>
+
+                {/* Jalur Seleksi Interaktif */}
+                <section id="jalur-seleksi" className="py-16 bg-blue-50/60 border-y border-blue-100">
+                    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
+                        <div className="text-center max-w-2xl mx-auto mb-12">
+                            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-white px-3 py-1 rounded-full border border-blue-200">
+                                KUOTA PENERIMAAN
+                            </span>
+                            <h3 className="text-3xl font-black text-slate-900 tracking-tight mt-3">Jalur Seleksi SPMB</h3>
+                            <p className="text-sm text-slate-500 mt-2">Empat jalur penerimaan calon siswa baru SMAN 1 Slawi.</p>
+                        </div>
+
+                        <div className="flex flex-col gap-4">
+                            {jalurSeleksi.map((j, idx) => (
+                                <div 
+                                    key={idx} 
+                                    className={`p-6 rounded-3xl bg-white border border-blue-100 shadow-sm hover:shadow-xl hover:border-blue-300 transition transform hover:-translate-y-1 duration-200 cursor-pointer group reveal-on-scroll reveal-delay-${(idx + 1) * 100}`}
                                 >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M24 8.25a.5.5 0 0 0-.5-.5H.5a.5.5 0 0 0-.5.5v12a2.5 2.5 0 0 0 2.5 2.5h19a2.5 2.5 0 0 0 2.5-2.5v-12Zm-7.765 5.868a1.221 1.221 0 0 1 0 2.264l-6.626 2.776A1.153 1.153 0 0 1 8 18.123v-5.746a1.151 1.151 0 0 1 1.609-1.035l6.626 2.776ZM19.564 1.677a.25.25 0 0 0-.177-.427H15.6a.106.106 0 0 0-.072.03l-4.54 4.543a.25.25 0 0 0 .177.427h3.783c.027 0 .054-.01.073-.03l4.543-4.543ZM22.071 1.318a.047.047 0 0 0-.045.013l-4.492 4.492a.249.249 0 0 0 .038.385.25.25 0 0 0 .14.042h5.784a.5.5 0 0 0 .5-.5v-2a2.5 2.5 0 0 0-1.925-2.432ZM13.014 1.677a.25.25 0 0 0-.178-.427H9.101a.106.106 0 0 0-.073.03l-4.54 4.543a.25.25 0 0 0 .177.427H8.4a.106.106 0 0 0 .073-.03l4.54-4.543ZM6.513 1.677a.25.25 0 0 0-.177-.427H2.5A2.5 2.5 0 0 0 0 3.75v2a.5.5 0 0 0 .5.5h1.4a.106.106 0 0 0 .073-.03l4.54-4.543Z" />
-                                            </g>
-                                        </svg>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                        <h4 className="font-extrabold text-slate-900 text-lg group-hover:text-blue-700 transition">{j.nama}</h4>
+                                        <span className={`text-xs font-extrabold text-white ${j.badgeBg} px-3.5 py-1.5 rounded-full shadow-xs w-fit`}>
+                                            {j.kuota}
+                                        </span>
                                     </div>
+                                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{j.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laracasts
-                                        </h2>
+                {/* Persyaratan Dokumen & 7 Mapel Penilaian Vertikal */}
+                <section id="persyaratan-berkas" className="py-16 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
+                        <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                            DOKUMEN &amp; KETENTUAN
+                        </span>
+                        <h3 className="text-3xl font-black text-slate-900 tracking-tight mt-3">Persyaratan Berkas Pendaftaran</h3>
+                        <p className="text-sm text-slate-500 mt-2">Daftar dokumen wajib dan 7 mata pelajaran kelayakan nilai rapor calon peserta didik.</p>
+                    </div>
 
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laracasts offers thousands of video
-                                            tutorials on Laravel, PHP, and
-                                            JavaScript development. Check them
-                                            out, see for yourself, and massively
-                                            level up your development skills in
-                                            the process.
-                                        </p>
+                    <div className="grid md:grid-cols-2 gap-8 items-start">
+                        
+                        {/* Box 1: Persyaratan Dokumen */}
+                        <div className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-lg transition duration-200 reveal-on-scroll">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-600/20">
+                                    📄
+                                </div>
+                                <div>
+                                    <h4 className="text-xl font-black text-slate-900">Persyaratan Dokumen</h4>
+                                    <p className="text-xs text-slate-500">Wajib dipersiapkan oleh calon peserta</p>
+                                </div>
+                            </div>
+                            <ul className="space-y-3 text-xs sm:text-sm text-slate-700">
+                                {dokumenReq.map((doc, idx) => (
+                                    <li key={idx} className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 font-semibold hover:bg-blue-50 hover:border-blue-200 transition duration-150">
+                                        <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                                        <span>{doc}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* 7 Mata Pelajaran Penilaian Vertikal (1 s.d 7) */}
+                        <div className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-lg transition duration-200 reveal-on-scroll reveal-delay-200">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 rounded-2xl bg-blue-800 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-800/20">
+                                    📚
+                                </div>
+                                <div>
+                                    <h4 className="text-xl font-black text-slate-900">7 Mata Pelajaran Penilaian</h4>
+                                    <p className="text-xs text-slate-500">Nilai Rapor Semester 1–5 (Nomor 1 s.d 7)</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex flex-col gap-3 text-xs sm:text-sm text-slate-700">
+                                {mapelPenilaian.map((m, idx) => (
+                                    <div key={idx} className="flex items-center gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 font-semibold hover:bg-blue-50 hover:border-blue-200 transition duration-150">
+                                        <span className="w-7 h-7 rounded-xl bg-blue-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                                            {idx + 1}
+                                        </span>
+                                        <span>{m}</span>
                                     </div>
+                                ))}
+                            </div>
+                        </div>
 
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
+                    </div>
+                </section>
+
+                {/* Informasi Pendaftaran Online & Narahubung Interaktif */}
+                <section id="kontak-informasi" className="py-16 bg-gradient-to-br from-blue-900 to-blue-950 text-white">
+                    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
+                        <div className="grid md:grid-cols-12 gap-8">
+                            
+                            {/* Pendaftaran & Link Resmi */}
+                            <div className="md:col-span-6 space-y-4">
+                                <span className="text-xs font-bold text-blue-300 uppercase tracking-widest">AKSES RESMI PENDAFTARAN</span>
+                                <h4 className="text-2xl font-black text-white">Informasi Pendaftaran Online</h4>
+                                <p className="text-xs text-blue-100 leading-relaxed">
+                                    Seluruh proses pendaftaran dilakukan secara daring. Calon peserta didik dan orang tua/wali dapat mengakses informasi lengkap melalui tautan berikut:
+                                </p>
+                                <div className="pt-2 space-y-3">
+                                    <a 
+                                        href="https://linktr.ee/SPMB25_SMANSAWI" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-3 bg-white text-blue-950 hover:bg-blue-50 font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-2xl shadow-lg transition transform hover:scale-105 duration-200"
                                     >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <a
-                                    href="https://laravel-news.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
+                                        <span>🔗 Linktree SPMB SMANSAWI</span>
+                                        <span>&rarr;</span>
+                                    </a>
+                                    <div>
+                                        <a 
+                                            href="https://chat.whatsapp.com/HzexyMQc1w4GxjHj1H2weH" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-3 bg-blue-800/80 hover:bg-blue-800 text-blue-200 font-bold text-xs px-5 py-3 rounded-2xl border border-blue-700 transition transform hover:scale-105 duration-200"
                                         >
-                                            <g fill="#FF2D20">
-                                                <path d="M8.75 4.5H5.5c-.69 0-1.25.56-1.25 1.25v4.75c0 .69.56 1.25 1.25 1.25h3.25c.69 0 1.25-.56 1.25-1.25V5.75c0-.69-.56-1.25-1.25-1.25Z" />
-                                                <path d="M24 10a3 3 0 0 0-3-3h-2V2.5a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2V20a3.5 3.5 0 0 0 3.5 3.5h17A3.5 3.5 0 0 0 24 20V10ZM3.5 21.5A1.5 1.5 0 0 1 2 20V3a.5.5 0 0 1 .5-.5h14a.5.5 0 0 1 .5.5v17c0 .295.037.588.11.874a.5.5 0 0 1-.484.625L3.5 21.5ZM22 20a1.5 1.5 0 1 1-3 0V9.5a.5.5 0 0 1 .5-.5H21a1 1 0 0 1 1 1v10Z" />
-                                                <path d="M12.751 6.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 7.3v-.5a.75.75 0 0 1 .751-.753ZM12.751 10.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 11.3v-.5a.75.75 0 0 1 .751-.753ZM4.751 14.047h10a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-10A.75.75 0 0 1 4 15.3v-.5a.75.75 0 0 1 .751-.753ZM4.75 18.047h7.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-7.5A.75.75 0 0 1 4 19.3v-.5a.75.75 0 0 1 .75-.753Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laravel News
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel News is a community driven
-                                            portal and newsletter aggregating
-                                            all of the latest and most important
-                                            news in the Laravel ecosystem,
-                                            including new package releases and
-                                            tutorials.
-                                        </p>
-                                    </div>
-
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <div className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M16.597 12.635a.247.247 0 0 0-.08-.237 2.234 2.234 0 0 1-.769-1.68c.001-.195.03-.39.084-.578a.25.25 0 0 0-.09-.267 8.8 8.8 0 0 0-4.826-1.66.25.25 0 0 0-.268.181 2.5 2.5 0 0 1-2.4 1.824.045.045 0 0 0-.045.037 12.255 12.255 0 0 0-.093 3.86.251.251 0 0 0 .208.214c2.22.366 4.367 1.08 6.362 2.118a.252.252 0 0 0 .32-.079 10.09 10.09 0 0 0 1.597-3.733ZM13.616 17.968a.25.25 0 0 0-.063-.407A19.697 19.697 0 0 0 8.91 15.98a.25.25 0 0 0-.287.325c.151.455.334.898.548 1.328.437.827.981 1.594 1.619 2.28a.249.249 0 0 0 .32.044 29.13 29.13 0 0 0 2.506-1.99ZM6.303 14.105a.25.25 0 0 0 .265-.274 13.048 13.048 0 0 1 .205-4.045.062.062 0 0 0-.022-.07 2.5 2.5 0 0 1-.777-.982.25.25 0 0 0-.271-.149 11 11 0 0 0-5.6 2.815.255.255 0 0 0-.075.163c-.008.135-.02.27-.02.406.002.8.084 1.598.246 2.381a.25.25 0 0 0 .303.193 19.924 19.924 0 0 1 5.746-.438ZM9.228 20.914a.25.25 0 0 0 .1-.393 11.53 11.53 0 0 1-1.5-2.22 12.238 12.238 0 0 1-.91-2.465.248.248 0 0 0-.22-.187 18.876 18.876 0 0 0-5.69.33.249.249 0 0 0-.179.336c.838 2.142 2.272 4 4.132 5.353a.254.254 0 0 0 .15.048c1.41-.01 2.807-.282 4.117-.802ZM18.93 12.957l-.005-.008a.25.25 0 0 0-.268-.082 2.21 2.21 0 0 1-.41.081.25.25 0 0 0-.217.2c-.582 2.66-2.127 5.35-5.75 7.843a.248.248 0 0 0-.09.299.25.25 0 0 0 .065.091 28.703 28.703 0 0 0 2.662 2.12.246.246 0 0 0 .209.037c2.579-.701 4.85-2.242 6.456-4.378a.25.25 0 0 0 .048-.189 13.51 13.51 0 0 0-2.7-6.014ZM5.702 7.058a.254.254 0 0 0 .2-.165A2.488 2.488 0 0 1 7.98 5.245a.093.093 0 0 0 .078-.062 19.734 19.734 0 0 1 3.055-4.74.25.25 0 0 0-.21-.41 12.009 12.009 0 0 0-10.4 8.558.25.25 0 0 0 .373.281 12.912 12.912 0 0 1 4.826-1.814ZM10.773 22.052a.25.25 0 0 0-.28-.046c-.758.356-1.55.635-2.365.833a.25.25 0 0 0-.022.48c1.252.43 2.568.65 3.893.65.1 0 .2 0 .3-.008a.25.25 0 0 0 .147-.444c-.526-.424-1.1-.917-1.673-1.465ZM18.744 8.436a.249.249 0 0 0 .15.228 2.246 2.246 0 0 1 1.352 2.054c0 .337-.08.67-.23.972a.25.25 0 0 0 .042.28l.007.009a15.016 15.016 0 0 1 2.52 4.6.25.25 0 0 0 .37.132.25.25 0 0 0 .096-.114c.623-1.464.944-3.039.945-4.63a12.005 12.005 0 0 0-5.78-10.258.25.25 0 0 0-.373.274c.547 2.109.85 4.274.901 6.453ZM9.61 5.38a.25.25 0 0 0 .08.31c.34.24.616.561.8.935a.25.25 0 0 0 .3.127.631.631 0 0 1 .206-.034c2.054.078 4.036.772 5.69 1.991a.251.251 0 0 0 .267.024c.046-.024.093-.047.141-.067a.25.25 0 0 0 .151-.23A29.98 29.98 0 0 0 15.957.764a.25.25 0 0 0-.16-.164 11.924 11.924 0 0 0-2.21-.518.252.252 0 0 0-.215.076A22.456 22.456 0 0 0 9.61 5.38Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Vibrant Ecosystem
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel's robust library of
-                                            first-party tools and libraries,
-                                            such as{' '}
-                                            <a
-                                                href="https://forge.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]"
-                                            >
-                                                Forge
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://vapor.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Vapor
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://nova.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Nova
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://envoyer.io"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Envoyer
-                                            </a>
-                                            , and{' '}
-                                            <a
-                                                href="https://herd.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Herd
-                                            </a>{' '}
-                                            help you take your projects to the
-                                            next level. Pair them with powerful
-                                            open source libraries like{' '}
-                                            <a
-                                                href="https://laravel.com/docs/billing"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Cashier
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/dusk"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Dusk
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/broadcasting"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Echo
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/horizon"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Horizon
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/sanctum"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Sanctum
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/telescope"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Telescope
-                                            </a>
-                                            , and more.
-                                        </p>
+                                            <span>💬 Grup WhatsApp Alternatif SPMB</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        </main>
 
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            Laravel v{laravelVersion} (PHP v{phpVersion})
-                        </footer>
+                            {/* Narahubung Panitia */}
+                            <div className="md:col-span-6 bg-white/10 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/15">
+                                <h4 className="text-lg font-black text-white mb-4 flex items-center gap-2">
+                                    <span>📞 Narahubung Panitia SPMB</span>
+                                </h4>
+                                <div className="grid sm:grid-cols-2 gap-3 text-xs">
+                                    {narahubung.map((n, idx) => (
+                                        <div key={idx} className="bg-blue-950/60 p-3.5 rounded-xl border border-white/10 hover:border-sky-400 transition duration-150">
+                                            <p className="font-bold text-white">{n.nama}</p>
+                                            <p className="text-sky-300 font-extrabold mt-0.5">{n.telp}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                </div>
+                </section>
+
+                {/* Section Media Sosial & Alamat Sekolah */}
+                <section className="py-12 bg-slate-900 text-white border-b border-slate-800">
+                    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                        
+                        <div className="text-center md:text-left border-b border-slate-800 pb-6">
+                            <h4 className="text-xl sm:text-2xl font-black text-white tracking-tight">Kanal Media Sosial & Informasi Alamat Resmi SMAN 1 Slawi</h4>
+                            <p className="text-sm text-slate-300 mt-1.5 flex items-center gap-2 justify-center md:justify-start">
+                                <span>📍 Jl. Kh Wahid Hasyim No.1, Kalijembangan, Pakembaran, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52415</span>
+                            </p>
+                        </div>
+
+                        {/* Grid Sosmed */}
+                        <div className="grid sm:grid-cols-3 gap-4">
+                            
+                            {/* Website */}
+                            <a 
+                                href="https://sman1slawi.sch.id" 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="flex items-center gap-4 p-5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 transition transform hover:-translate-y-1 group"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shrink-0 group-hover:scale-110 transition">
+                                    🌐
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-blue-300 uppercase tracking-wider">Website Resmi</p>
+                                    <p className="text-base font-extrabold text-white">sman1slawi.sch.id</p>
+                                </div>
+                            </a>
+
+                            {/* Instagram */}
+                            <a 
+                                href="https://instagram.com/smansawi_official" 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="flex items-center gap-4 p-5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 transition transform hover:-translate-y-1 group"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-pink-600 text-white flex items-center justify-center font-black text-xl shrink-0 group-hover:scale-110 transition">
+                                    📸
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-pink-300 uppercase tracking-wider">Instagram Resmi</p>
+                                    <p className="text-base font-extrabold text-white">@smansawi_official</p>
+                                </div>
+                            </a>
+
+                            {/* YouTube */}
+                            <a 
+                                href="https://www.youtube.com/@sman1slawi" 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="flex items-center gap-4 p-5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 transition transform hover:-translate-y-1 group"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-red-600 text-white flex items-center justify-center font-black text-xl shrink-0 group-hover:scale-110 transition">
+                                    ▶️
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-red-300 uppercase tracking-wider">YouTube Resmi</p>
+                                    <p className="text-base font-extrabold text-white">SMAN 1 SLAWI</p>
+                                </div>
+                            </a>
+
+                        </div>
+
+                    </div>
+                </section>
+
+                {/* Footer Copyright */}
+                <footer className="bg-slate-950 text-slate-400 py-10 text-center text-xs">
+                    <div className="max-w-5xl mx-auto px-4 space-y-4">
+                        <div className="flex items-center justify-center gap-2.5">
+                            <LogoSmansawi className="w-8 h-8 inline" />
+                            <span className="font-bold text-slate-200 text-sm">SMA Negeri 1 Slawi</span>
+                        </div>
+                        
+                        <p className="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                            Sistem Antrean & Informasi SPMB SMAN 1 Slawi ini merupakan hasil karya pengabdian masyarakat dari <br />
+                            <strong className="text-sky-400 font-bold">Kelompok KKN Sahabat Sekolah Jawa Tengah 001 Universitas Muhammadiyah Yogyakarta Periode Genap 2025/2026</strong>.
+                        </p>
+                        
+                        <div className="pt-3 border-t border-slate-900 text-slate-400 text-xs sm:text-sm font-semibold">
+                            &copy; 2026 SMAN 1 Slawi &bull; Panitia SPMB dan KKN Sahabat Sekolah Jateng 001 UMY. All Rights Reserved.
+                        </div>
+                    </div>
+                </footer>
+
             </div>
         </>
     );

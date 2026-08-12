@@ -12,26 +12,34 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    // Pendaftaran Siswa
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
-
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    // Login Siswa (Default)
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
+    // Login khusus Admin (URL: admin/login)
+    Route::get('admin/login', [AuthenticatedSessionController::class, 'createAdmin'])
+        ->name('admin.login');
+
+    // Login khusus Guru (URL: guru/login)
+    Route::get('guru/login', [AuthenticatedSessionController::class, 'createGuru'])
+        ->name('guru.login');
+
+    // Action Submit Login (Dipakai bersama oleh Siswa, Admin, & Guru)
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
+    // Reset Password Rute
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
-
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
         ->name('password.email');
-
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
         ->name('password.reset');
-
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
+    Route::post('reset-password', [PasswordResetLinkController::class, 'store'])
         ->name('password.store');
 });
 

@@ -18,9 +18,31 @@ class LoginRequest extends FormRequest
 
     public function rules(): array
     {
+        $targetRole = $this->input('target_role', 'siswa');
+
+        // Jika login siswa, kunci NISN 10 digit angka. Jika admin/guru boleh alfanumerik.
+        if ($targetRole === 'siswa') {
+            return [
+                'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
+                'password' => ['required', 'string'],
+                'target_role' => ['nullable', 'string', 'in:siswa,admin,guru'],
+            ];
+        }
+
         return [
-            'nisn' => ['required', 'string'],
+            'nisn' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9]+$/'],
             'password' => ['required', 'string'],
+            'target_role' => ['nullable', 'string', 'in:siswa,admin,guru'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nisn.required' => 'NISN / ID Pengguna wajib diisi.',
+            'nisn.size' => 'NISN harus berjumlah tepat 10 digit angka.',
+            'nisn.regex' => 'Format NISN / ID Pengguna tidak valid.',
+            'password.required' => 'Password wajib diisi.',
         ];
     }
 
@@ -32,7 +54,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'nisn' => trans('auth.failed'),
+                'nisn' => 'NISN / ID Pengguna atau Password yang Anda masukkan salah.',
             ]);
         }
 
@@ -50,10 +72,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'nisn' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'nisn' => 'Terlalu banyak percobaan masuk yang gagal. Silakan coba lagi dalam '.$seconds.' detik.',
         ]);
     }
 

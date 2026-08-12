@@ -1,176 +1,203 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
+import LogoSmansawi from '@/Components/LogoSmansawi';
 import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const handleConfirmLogout = () => {
+        router.post(route('logout'));
+    };
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-600 selection:text-white">
+            {/* TOP NAVBAR ULTRA-ELEGAN & MINIMALIS */}
+            <nav className="bg-white/90 backdrop-blur-xl border-b border-slate-200/80 sticky top-0 z-40 shadow-xs">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                    <div className="flex h-16 items-center justify-between">
+                        
+                        {/* LOGO BRAND SMAN 1 SLAWI */}
+                        <div className="flex items-center gap-4">
+                            <Link href={route('etiket')} className="flex items-center gap-3 group">
+                                <LogoSmansawi className="w-10 h-10 transition transform group-hover:scale-105 duration-200" />
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-black text-slate-900 leading-none text-base tracking-tight group-hover:text-blue-600 transition">
+                                            SMAN 1 SLAWI
+                                        </span>
+                                        <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                            SPMB
+                                        </span>
+                                    </div>
+                                    <span className="block text-[10px] font-bold text-slate-400 tracking-wide mt-0.5">
+                                        Portal Antrean Siswa
+                                    </span>
+                                </div>
+                            </Link>
+
+                            <div className="hidden md:flex border-l border-slate-200 ms-4 pl-5 h-8 items-center gap-2">
+                                <Link
+                                    href={route('etiket')}
+                                    className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${
+                                        route().current('etiket')
+                                            ? 'bg-blue-600 text-white shadow-xs'
+                                            : 'text-slate-600 hover:text-blue-700 hover:bg-slate-100'
+                                    }`}
+                                >
+                                    E-Tiket
+                                </Link>
+                                <Link
+                                    href={route('cek-berkas')}
+                                    className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${
+                                        route().current('cek-berkas')
+                                            ? 'bg-blue-600 text-white shadow-xs'
+                                            : 'text-slate-600 hover:text-blue-700 hover:bg-slate-100'
+                                    }`}
+                                >
+                                    Cek Berkas
                                 </Link>
                             </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
                         </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
+                        {/* USER PROFILE DROPDOWN ELEGANT */}
+                        <div className="hidden sm:flex sm:items-center">
+                            <Dropdown>
+                                <Dropdown.Trigger>
+                                    <button
+                                        type="button"
+                                        className="flex items-center gap-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/90 px-3.5 py-1.5 text-xs font-bold text-slate-800 transition duration-200 shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                    >
+                                        <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
+                                            {user.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="text-left">
+                                            <span className="block font-extrabold text-slate-900 text-xs leading-tight max-w-[150px] truncate">{user.name}</span>
+                                            <span className="block text-[10px] font-mono text-slate-400">NISN: {user.nisn}</span>
+                                        </div>
+                                        <svg className="ms-1 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                </Dropdown.Trigger>
 
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
+                                <Dropdown.Content align="right" width="56" contentClasses="py-2 bg-white text-slate-900 rounded-2xl shadow-2xl border border-slate-100">
+                                    <div className="px-4 py-2.5 border-b border-slate-100">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status Sesi</p>
+                                        <p className="text-xs font-extrabold text-blue-700">Calon Peserta Didik Baru</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowLogoutModal(true)}
+                                        className="w-full text-left px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition flex items-center gap-2"
+                                    >
+                                        Keluar Sesi Akun
+                                    </button>
+                                </Dropdown.Content>
+                            </Dropdown>
                         </div>
 
-                        <div className="-me-2 flex items-center sm:hidden">
+                        {/* HAMBURGER BUTTON MOBILE */}
+                        <div className="flex items-center sm:hidden">
                             <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                                onClick={() => setShowingNavigationDropdown((prev) => !prev)}
+                                className="p-2.5 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 transition"
                             >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
+                                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={showingNavigationDropdown ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
                                 </svg>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
+                {/* MOBILE MENU DROPDOWN */}
+                {showingNavigationDropdown && (
+                    <div className="sm:hidden border-t border-slate-100 bg-white/95 backdrop-blur-lg px-4 pt-3 pb-4 space-y-3">
+                        <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-sm">
+                                {user.name.charAt(0).toUpperCase()}
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
+                            <div>
+                                <div className="text-sm font-extrabold text-slate-900">{user.name}</div>
+                                <div className="text-xs text-slate-500 font-mono">NISN: {user.nisn}</div>
                             </div>
                         </div>
 
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
+                        <div className="space-y-1">
+                            <Link
+                                href={route('etiket')}
+                                className={`w-full block font-extrabold text-xs p-3 rounded-2xl transition ${
+                                    route().current('etiket')
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                }`}
                             >
-                                Log Out
-                            </ResponsiveNavLink>
+                                E-Tiket Antrean
+                            </Link>
+                            <Link
+                                href={route('cek-berkas')}
+                                className={`w-full block font-extrabold text-xs p-3 rounded-2xl transition ${
+                                    route().current('cek-berkas')
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                }`}
+                            >
+                                Cek Berkas Persyaratan
+                            </Link>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={() => setShowLogoutModal(true)}
+                            className="w-full text-left font-extrabold text-xs text-rose-600 bg-rose-50 p-3 rounded-2xl border border-rose-200 flex items-center justify-between"
+                        >
+                            <span>🚪 Keluar Sesi Akun</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                )}
+            </nav>
+
+            <main>{children}</main>
+
+            {/* MODAL POPUP KONFIRMASI LOGOUT */}
+            {showLogoutModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 text-center transform animate-in zoom-in-95 duration-200">
+                        <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-3xl mx-auto flex items-center justify-center text-2xl shadow-inner mb-4">
+                            🚪
+                        </div>
+
+                        <h3 className="text-xl font-black text-slate-900 tracking-tight mb-2">
+                            Konfirmasi Keluar Akun
+                        </h3>
+                        
+                        <p className="text-xs font-semibold text-slate-500 leading-relaxed mb-6">
+                            Apakah Anda yakin ingin keluar dari portal sesi akun <span className="font-extrabold text-slate-800">{user.name}</span>? Anda perlu masuk kembali untuk mengakses tiket antrean.
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setShowLogoutModal(false)}
+                                className="py-3 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs transition"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleConfirmLogout}
+                                className="py-3 px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-lg shadow-rose-600/30 transition transform hover:-translate-y-0.5"
+                            >
+                                Ya, Keluar Akun
+                            </button>
                         </div>
                     </div>
                 </div>
-            </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
             )}
-
-            <main>{children}</main>
         </div>
     );
 }

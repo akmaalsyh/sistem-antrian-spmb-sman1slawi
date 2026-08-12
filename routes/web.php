@@ -8,9 +8,12 @@ use Inertia\Inertia;
 
 Route::get('/', [AntreanController::class, 'index'])->name('beranda');
 
-Route::get('/dashboard', [AntreanController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
+    Route::get('/etiket', [AntreanController::class, 'dashboard'])->name('etiket');
+    Route::get('/cek-berkas', [AntreanController::class, 'cekBerkas'])->name('cek-berkas');
+    Route::post('/etiket/ambil-antrean', [AntreanController::class, 'ambilAntrean'])->name('antrean.ambil');
+    Route::post('/etiket/batal-antrean', [AntreanController::class, 'batalAntrean'])->name('antrean.batal');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

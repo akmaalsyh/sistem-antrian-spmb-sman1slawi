@@ -17,7 +17,18 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        $middleware->redirectUsersTo(function (Request $request) {
+            $user = $request->user();
+            if ($user) {
+                if ($user->hasRole('admin')) {
+                    return route('admin.dashboard');
+                } elseif ($user->hasRole('guru')) {
+                    return route('guru.dashboard');
+                }
+                return route('etiket');
+            }
+            return route('etiket');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -6,18 +6,11 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-class DatabaseSeeder extends Seeder
+class UserRoleSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        $this->call([
-            JadwalKuotaSeeder::class,
-        ]);
-
-        // Akun Admin SPMB Default
+        // Admin SPMB
         User::updateOrCreate(
             ['nisn' => 'ADMIN001'],
             [
@@ -27,7 +20,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Akun Guru / Verifikator Default
+        // Guru / Verifikator
         User::updateOrCreate(
             ['nisn' => 'GURU001'],
             [
