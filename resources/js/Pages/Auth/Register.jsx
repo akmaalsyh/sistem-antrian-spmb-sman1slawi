@@ -195,11 +195,11 @@ export default function Register() {
 
                         {/* Judul & Kalimat Selamat */}
                         <span className="text-[11px] font-extrabold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 inline-block mb-2">
-                            🎉 AKUN TELAH TERDAFTAR
+                            🎉 PENDAFTARAN SUKSES
                         </span>
 
                         <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-tight mb-1">
-                            Akun Telah Terdaftar!
+                            Selamat, Akun Berhasil Didaftarkan!
                         </h3>
                         
                         <p className="text-sm font-extrabold text-blue-700">

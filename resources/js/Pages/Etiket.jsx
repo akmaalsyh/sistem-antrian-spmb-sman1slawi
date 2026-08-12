@@ -1,8 +1,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }) {
+    
+    // Polling Real-time status E-Tiket siswa setiap 3 detik tanpa refresh manual
+    useEffect(() => {
+        if (!antreanSiswa) return;
+        const pollInterval = setInterval(() => {
+            router.reload({ only: ['antreanSiswa'] });
+        }, 3000);
+        return () => clearInterval(pollInterval);
+    }, [antreanSiswa]);
     
     // Setel bulan kalender ke jadwal pertama yang tersedia, atau bulan ini
     const initialDate = jadwalTersedia.length > 0 ? new Date(jadwalTersedia[0].tanggal) : new Date();
@@ -158,7 +167,46 @@ export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }
                         </div>
                     )}
                     
-                    {antreanSiswa ? (
+                    {antreanSiswa && antreanSiswa.status === 'Selesai' ? (
+                        /* ================= MODE PROSES VERIFIKASI SELESAI ================= */
+                        <div className="max-w-xl mx-auto space-y-6 animate-in fade-in duration-300">
+                            <div className="bg-white rounded-3xl p-8 text-center shadow-2xl border border-emerald-100 relative overflow-hidden">
+                                <div className="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                                <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                                <div className="mx-auto w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center border-4 border-emerald-100 mb-6 shadow-inner">
+                                    <span className="text-5xl">🎓</span>
+                                </div>
+
+                                <span className="inline-block px-4 py-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full text-xs font-black uppercase tracking-wider mb-3">
+                                    ✅ VERIFIKASI BERKAS SELESAI
+                                </span>
+
+                                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                                    Terima Kasih, {auth.user.name}!
+                                </h2>
+
+                                <p className="text-sm font-bold text-emerald-700 mt-2">
+                                    Proses Verifikasi Berkas Fisik SPMB di SMAN 1 Slawi Telah Selesai
+                                </p>
+
+                                <div className="my-6 p-5 rounded-2xl bg-slate-50 border border-slate-200/80 text-slate-600 text-xs sm:text-sm leading-relaxed space-y-2 text-left">
+                                    <p>
+                                        Seluruh berkas pendaftaran Anda telah diperiksa dan diverifikasi oleh panitia SPMB SMAN 1 Slawi. Semoga hasil seleksi Anda mendapatkan nilai terbaik dan diterima menjadi bagian dari keluarga besar SMAN 1 Slawi! 🌟
+                                    </p>
+                                </div>
+
+                                <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
+                                    <a
+                                        href={route('cek-berkas')}
+                                        className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5 text-xs sm:text-sm"
+                                    >
+                                        <span>📋 Cek Persyaratan Berkas</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    ) : antreanSiswa ? (
                         /* ================= MODE TIKET VIRTUAL (JIKA SUDAH PUNYA TIKET) ================= */
                         <div className="space-y-6">
                             
@@ -179,15 +227,15 @@ export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }
                                 
                                 {/* Bagian Atas Tiket */}
                                 <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 p-8 text-center text-white relative">
-                                    <div className="absolute top-5 right-5">
-                                        <span className={`px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border backdrop-blur-md ${
-                                            antreanSiswa.status === 'Selesai' 
-                                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
-                                                : antreanSiswa.status === 'Dilayani'
-                                                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
-                                                    : 'bg-blue-500/20 text-blue-300 border-blue-500/40'
+                                    
+                                    {/* STATUS BADGE REVISI (TIDAK BENTROK/MENUMPUK DENGAN JUDUL) */}
+                                    <div className="mb-4">
+                                        <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border backdrop-blur-md ${
+                                            antreanSiswa.status === 'Dilayani'
+                                                ? 'bg-amber-500/30 text-amber-200 border-amber-400/50 animate-pulse shadow-lg'
+                                                : 'bg-blue-500/20 text-blue-300 border-blue-500/40'
                                         }`}>
-                                            {antreanSiswa.status === 'Dilayani' ? '🔔 Menuju Meja Panitia' : antreanSiswa.status}
+                                            {antreanSiswa.status === 'Dilayani' ? '🔔 SEDANG DIPANGGIL' : antreanSiswa.status}
                                         </span>
                                     </div>
 
@@ -206,17 +254,17 @@ export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }
                                         </h1>
                                     </div>
 
-                                    {/* JAM KEDATANGAN TUNGGAL */}
-                                    <div className="inline-flex items-center gap-2.5 bg-emerald-500/20 border border-emerald-400/40 px-5 py-2.5 rounded-2xl backdrop-blur-md">
-                                        <span className="text-lg">⏰</span>
-                                        <div className="text-left">
-                                            <span className="block text-[10px] font-extrabold text-emerald-300 uppercase tracking-wider">
-                                                Jam Kedatangan Di Sekolah:
-                                            </span>
-                                            <span className="block font-black text-white text-base font-mono tracking-wide">
-                                                {antreanSiswa.estimasi_jam ? (antreanSiswa.estimasi_jam.includes('WIB') ? antreanSiswa.estimasi_jam : `${antreanSiswa.estimasi_jam} WIB`) : '07:30 WIB'}
+                                    {/* JAM KEDATANGAN RATA TENGAH SEMUA */}
+                                    <div className="flex flex-col items-center justify-center gap-1 bg-emerald-500/20 border border-emerald-400/40 px-6 py-3 rounded-2xl backdrop-blur-md mx-auto max-w-xs">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-base">⏰</span>
+                                            <span className="text-[11px] font-extrabold text-emerald-300 uppercase tracking-wider">
+                                                Jam Kedatangan Di Sekolah
                                             </span>
                                         </div>
+                                        <span className="font-black text-white text-lg font-mono tracking-wide">
+                                            {antreanSiswa.estimasi_jam ? (antreanSiswa.estimasi_jam.includes('WIB') ? antreanSiswa.estimasi_jam : `${antreanSiswa.estimasi_jam} WIB`) : '07:30 WIB'}
+                                        </span>
                                     </div>
                                 </div>
                                 
@@ -251,9 +299,23 @@ export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }
                                     <div className="flex justify-between items-center">
                                         <span className="text-slate-500 font-semibold">Lokasi Verifikasi</span>
                                         <span className="font-bold text-slate-900">
-                                            Aula Utama SMAN 1 Slawi
+                                            {antreanSiswa.loket ? antreanSiswa.loket : 'Aula Utama SMAN 1 Slawi'}
                                         </span>
                                     </div>
+
+                                    {antreanSiswa.status === 'Dilayani' && (
+                                        <div className="p-4 rounded-2xl bg-amber-400 text-amber-950 border-2 border-amber-500 font-black text-center animate-bounce shadow-lg">
+                                            <span className="block text-xs uppercase tracking-wider">📢 NOMOR ANTREAN ANDA SEDANG DIPANGGIL!</span>
+                                            <span className="block text-lg font-mono tracking-tight mt-1">Silakan Segera Menuju: {antreanSiswa.loket || 'Meja Verifikator'}</span>
+                                        </div>
+                                    )}
+
+                                    {antreanSiswa.status === 'Selesai' && (
+                                        <div className="p-4 rounded-2xl bg-emerald-500 text-white border-2 border-emerald-400 font-black text-center shadow-lg">
+                                            <span className="block text-xs uppercase tracking-wider">✅ PROSES VERIFIKASI SELESAI</span>
+                                            <span className="block text-sm font-bold tracking-tight mt-1">Terima kasih, berkas pendaftaran Anda telah selesai diverifikasi oleh panitia SPMB.</span>
+                                        </div>
+                                    )}
 
                                     {/* Himbauan & Petunjuk Penting Verifikasi Fisik */}
                                     <div className="mt-2 p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs space-y-2">

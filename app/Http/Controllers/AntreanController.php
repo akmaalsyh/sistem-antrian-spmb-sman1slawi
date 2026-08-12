@@ -51,10 +51,11 @@ class AntreanController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Cek antrean siswa yang masih AKTIF (status 'Menunggu' atau 'Dilayani')
+        // 1. Cek antrean siswa (termasuk status 'Menunggu', 'Dilayani', maupun 'Selesai')
         $antreanSiswa = Antrean::with('jadwal')
             ->where('user_id', $user->id)
-            ->whereIn('status', ['Menunggu', 'Dilayani'])
+            ->whereIn('status', ['Menunggu', 'Dilayani', 'Selesai'])
+            ->latest('updated_at')
             ->first();
 
         // Regenerasi jam kedatangan agar formatnya jam mulai saja (misal: 07:30 WIB)
@@ -98,12 +99,12 @@ class AntreanController extends Controller
 
         return DB::transaction(function () use ($request, $user) {
             $existing = Antrean::where('user_id', $user->id)
-                ->whereIn('status', ['Menunggu', 'Dilayani'])
+                ->whereIn('status', ['Menunggu', 'Dilayani', 'Selesai'])
                 ->first();
 
             if ($existing) {
                 return redirect()->back()->withErrors([
-                    'error' => 'Anda sudah memiliki tiket antrean aktif. Tidak dapat mendaftar ganda.'
+                    'error' => 'Anda telah menyelesaikan atau memiliki tiket antrean. Tidak dapat mendaftar kembali.'
                 ]);
             }
 

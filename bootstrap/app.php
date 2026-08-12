@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
@@ -20,9 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo(function (Request $request) {
             $user = $request->user();
             if ($user) {
-                if ($user->hasRole('admin')) {
+                if ($user->role === 'admin') {
                     return route('admin.dashboard');
-                } elseif ($user->hasRole('guru')) {
+                } elseif ($user->role === 'guru') {
                     return route('guru.dashboard');
                 }
                 return route('etiket');
