@@ -59,7 +59,7 @@ export default function CekBerkas() {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Cek Berkas Persyaratan - SPMB SMAN 1 Slawi" />
+            <Head title="Cek Berkas Persyaratan" />
 
             <div className="py-8 bg-slate-50 min-h-[calc(100vh-65px)]">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -82,7 +82,7 @@ export default function CekBerkas() {
                             </div>
 
                             <Link
-                                href={route('etiket')}
+                                href={route('siswa.etiket')}
                                 className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-blue-950 font-extrabold text-xs shadow-lg hover:bg-blue-50 transition shrink-0"
                             >
                                 <span>← Kembali ke E-Tiket</span>

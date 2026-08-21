@@ -21,7 +21,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         
                         {/* LOGO BRAND SMAN 1 SLAWI */}
                         <div className="flex items-center gap-4">
-                            <Link href={route('etiket')} className="flex items-center gap-3 group">
+                            <Link href={route('siswa.etiket')} className="flex items-center gap-3 group">
                                 <LogoSmansawi className="w-10 h-10 transition transform group-hover:scale-105 duration-200" />
                                 <div>
                                     <div className="flex items-center gap-2">
@@ -40,9 +40,9 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="hidden md:flex border-l border-slate-200 ms-4 pl-5 h-8 items-center gap-2">
                                 <Link
-                                    href={route('etiket')}
+                                    href={route('siswa.etiket')}
                                     className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${
-                                        route().current('etiket')
+                                        route().current('siswa.etiket')
                                             ? 'bg-blue-600 text-white shadow-xs'
                                             : 'text-slate-600 hover:text-blue-700 hover:bg-slate-100'
                                     }`}
@@ -50,9 +50,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                     E-Tiket
                                 </Link>
                                 <Link
-                                    href={route('cek-berkas')}
+                                    href={route('siswa.cek-berkas')}
                                     className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${
-                                        route().current('cek-berkas')
+                                        route().current('siswa.cek-berkas')
                                             ? 'bg-blue-600 text-white shadow-xs'
                                             : 'text-slate-600 hover:text-blue-700 hover:bg-slate-100'
                                     }`}
@@ -128,9 +128,9 @@ export default function AuthenticatedLayout({ header, children }) {
 
                         <div className="space-y-1">
                             <Link
-                                href={route('etiket')}
+                                href={route('siswa.etiket')}
                                 className={`w-full block font-extrabold text-xs p-3 rounded-2xl transition ${
-                                    route().current('etiket')
+                                    route().current('siswa.etiket')
                                         ? 'bg-blue-600 text-white'
                                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                                 }`}
@@ -138,9 +138,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 E-Tiket Antrean
                             </Link>
                             <Link
-                                href={route('cek-berkas')}
+                                href={route('siswa.cek-berkas')}
                                 className={`w-full block font-extrabold text-xs p-3 rounded-2xl transition ${
-                                    route().current('cek-berkas')
+                                    route().current('siswa.cek-berkas')
                                         ? 'bg-blue-600 text-white'
                                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                                 }`}
@@ -167,10 +167,6 @@ export default function AuthenticatedLayout({ header, children }) {
             {showLogoutModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 text-center transform animate-in zoom-in-95 duration-200">
-                        <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-3xl mx-auto flex items-center justify-center text-2xl shadow-inner mb-4">
-                            🚪
-                        </div>
-
                         <h3 className="text-xl font-black text-slate-900 tracking-tight mb-2">
                             Konfirmasi Keluar Akun
                         </h3>
@@ -192,7 +188,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 onClick={handleConfirmLogout}
                                 className="py-3 px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-lg shadow-rose-600/30 transition transform hover:-translate-y-0.5"
                             >
-                                Ya, Keluar Akun
+                                Ya, Keluar Sekarang
                             </button>
                         </div>
                     </div>

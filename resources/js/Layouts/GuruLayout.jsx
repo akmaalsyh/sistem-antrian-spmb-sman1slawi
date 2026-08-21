@@ -183,9 +183,6 @@ export default function GuruLayout({ header, children }) {
             {showLogoutModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fade-in">
                     <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 text-center space-y-4">
-                        <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-black">
-                            🚪
-                        </div>
                         <div>
                             <h3 className="text-base font-black text-slate-900">Konfirmasi Keluar</h3>
                             <p className="text-xs text-slate-500 font-medium mt-1">
@@ -205,7 +202,7 @@ export default function GuruLayout({ header, children }) {
                                 onClick={handleConfirmLogout}
                                 className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-xl text-xs shadow-md shadow-rose-600/20 transition"
                             >
-                                Ya, Keluar
+                                Ya, Keluar Sekarang
                             </button>
                         </div>
                     </div>

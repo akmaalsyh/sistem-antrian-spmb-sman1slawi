@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AntreanController; 
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\ProfileController;
@@ -14,10 +15,11 @@ Route::get('/', [AntreanController::class, 'index'])->name('beranda');
 Route::get('/display', [GuruController::class, 'monitor'])->name('monitor');
 Route::get('/api/monitor-data', [GuruController::class, 'monitorData'])->name('api.monitor-data');
 
-// RUTE KHUSUS ROLE SISWA
-Route::middleware(['auth', 'role:siswa'])->group(function () {
-    Route::get('/etiket', [AntreanController::class, 'dashboard'])->name('etiket');
-    Route::get('/cek-berkas', [AntreanController::class, 'cekBerkas'])->name('cek-berkas');
+// RUTE KHUSUS ROLE SISWA (Prefix /siswa)
+Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->group(function () {
+    Route::get('/dashboard', [AntreanController::class, 'dashboard'])->name('siswa.dashboard');
+    Route::get('/etiket', [AntreanController::class, 'dashboard'])->name('siswa.etiket');
+    Route::get('/cek-berkas', [AntreanController::class, 'cekBerkas'])->name('siswa.cek-berkas');
     Route::post('/etiket/ambil-antrean', [AntreanController::class, 'ambilAntrean'])->name('antrean.ambil');
     Route::post('/etiket/batal-antrean', [AntreanController::class, 'batalAntrean'])->name('antrean.batal');
 });
@@ -33,9 +35,25 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->group(function () {
 
 // RUTE KHUSUS ROLE ADMIN
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/jadwal', [AdminController::class, 'kelolaJadwal'])->name('admin.jadwal');
+    Route::post('/jadwal', [AdminController::class, 'simpanJadwal'])->name('admin.jadwal.simpan');
+    Route::put('/jadwal/{id}', [AdminController::class, 'updateJadwal'])->name('admin.jadwal.update');
+    Route::delete('/jadwal/{id}', [AdminController::class, 'hapusJadwal'])->name('admin.jadwal.hapus');
+
+    Route::get('/users', [AdminController::class, 'kelolaUser'])->name('admin.users');
+    Route::post('/users/guru', [AdminController::class, 'simpanGuru'])->name('admin.users.guru.simpan');
+    Route::post('/users/siswa', [AdminController::class, 'simpanSiswa'])->name('admin.users.siswa.simpan');
+    Route::put('/users/{id}/reset-password', [AdminController::class, 'resetPassword'])->name('admin.users.reset-password');
+    Route::delete('/users/{id}', [AdminController::class, 'hapusUser'])->name('admin.users.hapus');
+
+    Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
+    
+    Route::get('/pengaturan', [AdminController::class, 'kelolaPengaturan'])->name('admin.pengaturan');
+    Route::post('/pengaturan', [AdminController::class, 'simpanPengaturan'])->name('admin.pengaturan.simpan');
+
+    Route::get('/landing-page', [AdminController::class, 'kelolaLanding'])->name('admin.landing');
+    Route::post('/landing-page', [AdminController::class, 'simpanLanding'])->name('admin.landing.simpan');
 });
 
 // RUTE PROFILE UMUM

@@ -17,9 +17,19 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view for Siswa (Default /login)
      */
-    public function create(): Response
+    public function create(Request $request): Response|RedirectResponse
     {
-        return Inertia::render('Auth/Login', [
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'guru') {
+                return redirect()->route('guru.dashboard');
+            }
+            return redirect()->route('siswa.etiket');
+        }
+
+        return Inertia::render('Siswa/Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
             'roleTarget' => 'siswa',
@@ -29,9 +39,19 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view for Admin (URL /admin/login)
      */
-    public function createAdmin(): Response
+    public function createAdmin(Request $request): Response|RedirectResponse
     {
-        return Inertia::render('Auth/LoginAdmin', [
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'guru') {
+                return redirect()->route('guru.dashboard');
+            }
+            return redirect()->route('siswa.etiket');
+        }
+
+        return Inertia::render('Admin/Auth/Login', [
             'status' => session('status'),
             'roleTarget' => 'admin',
         ]);
@@ -40,9 +60,19 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view for Guru (URL /guru/login)
      */
-    public function createGuru(): Response
+    public function createGuru(Request $request): Response|RedirectResponse
     {
-        return Inertia::render('Auth/LoginGuru', [
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'guru') {
+                return redirect()->route('guru.dashboard');
+            }
+            return redirect()->route('siswa.etiket');
+        }
+
+        return Inertia::render('Guru/Auth/Login', [
             'status' => session('status'),
             'roleTarget' => 'guru',
         ]);
@@ -86,12 +116,12 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         if ($user->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+            return redirect()->route('admin.dashboard');
         } elseif ($user->role === 'guru') {
-            return redirect()->intended(route('guru.dashboard', absolute: false));
+            return redirect()->route('guru.dashboard');
         }
 
-        return redirect()->intended(route('etiket', absolute: false));
+        return redirect()->route('siswa.etiket');
     }
 
     /**
@@ -99,12 +129,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $userRole = Auth::user()?->role;
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        if ($userRole === 'admin') {
+            return redirect()->route('admin.login');
+        } elseif ($userRole === 'guru') {
+            return redirect()->route('guru.login');
+        }
+
+        return redirect()->route('login');
     }
 }

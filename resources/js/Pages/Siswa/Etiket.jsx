@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 
-export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }) {
+export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, pesanHimbauan, errors }) {
     
     // Polling Real-time status E-Tiket siswa setiap 3 detik tanpa refresh manual
     useEffect(() => {
@@ -154,7 +154,7 @@ export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }
 
     return (
         <AuthenticatedLayout>
-            <Head title="E-Tiket Antrean - SPMB SMAN 1 Slawi" />
+            <Head title="E-Tiket Antrean" />
 
             <div className="py-8 bg-slate-50 min-h-[calc(100vh-65px)]">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -323,6 +323,9 @@ export default function Dashboard({ auth, antreanSiswa, jadwalTersedia, errors }
                                             <span className="text-base">📌</span>
                                             <span>HIMBAUAN &amp; PETUNJUK KEDATANGAN:</span>
                                         </div>
+                                        <p className="text-[11px] font-bold text-amber-950 leading-relaxed bg-amber-100/60 p-2.5 rounded-xl border border-amber-200/80">
+                                            📢 {pesanHimbauan || 'Harap hadir 15 menit sebelum jam kedatangan tertera dan membawa berkas persyaratan fisik lengkap.'}
+                                        </p>
                                         <ul className="space-y-2 text-[11px] text-amber-900/90 font-medium pl-1 leading-relaxed">
                                             <li className="flex items-start gap-2">
                                                 <span className="font-black text-amber-700">1.</span>

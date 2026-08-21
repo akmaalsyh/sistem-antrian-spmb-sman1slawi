@@ -29,9 +29,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 } elseif ($user->role === 'guru') {
                     return route('guru.dashboard');
                 }
-                return route('etiket');
+                return route('siswa.etiket');
             }
-            return route('etiket');
+            return route('siswa.etiket');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

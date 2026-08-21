@@ -17,20 +17,22 @@ Route::middleware('guest')->group(function () {
         ->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    // Login Siswa (Default)
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
-
-    // Login khusus Admin (URL: admin/login)
-    Route::get('admin/login', [AuthenticatedSessionController::class, 'createAdmin'])
-        ->name('admin.login');
-
-    // Login khusus Guru (URL: guru/login)
-    Route::get('guru/login', [AuthenticatedSessionController::class, 'createGuru'])
-        ->name('guru.login');
-
     // Action Submit Login (Dipakai bersama oleh Siswa, Admin, & Guru)
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+});
+
+// GET Login Routes diletakkan di luar middleware 'guest' 
+// agar AuthenticatedSessionController bisa meng-handle pergantian sesi (role)
+Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    ->name('login');
+
+Route::get('admin/login', [AuthenticatedSessionController::class, 'createAdmin'])
+    ->name('admin.login');
+
+Route::get('guru/login', [AuthenticatedSessionController::class, 'createGuru'])
+    ->name('guru.login');
+
+Route::middleware('guest')->group(function () {
 
     // Reset Password Rute
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])

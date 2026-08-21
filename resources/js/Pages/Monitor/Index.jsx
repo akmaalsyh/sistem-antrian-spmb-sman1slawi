@@ -142,7 +142,7 @@ export default function Monitor({ antreanAktif: initialAntreanAktif, riwayatPang
 
     return (
         <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col justify-between select-none overflow-hidden relative">
-            <Head title="Display Monitor Layar Antrean - SMAN 1 Slawi" />
+            <Head title="Display Monitor Layar Antrean" />
 
             {/* BACKGROUND GRADIENT DEKORATIF ELEGAN */}
             <div className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-blue-600/15 rounded-full blur-[160px] pointer-events-none" />

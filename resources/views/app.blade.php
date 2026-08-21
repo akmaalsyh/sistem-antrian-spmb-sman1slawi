@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'SPMB SMAN 1 Slawi') }}</title>
 
         <!-- Favicon SMAN 1 Slawi -->
         <link rel="icon" type="image/png" href="/logo-smansawi-asli.png">

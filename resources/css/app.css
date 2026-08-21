@@ -1,18 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+html {
+    scroll-behavior: smooth;
+}
 
 @layer utilities {
     .reveal-on-scroll {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(35px) scale(0.97);
         transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: opacity, transform;
     }
 
     .reveal-on-scroll.is-visible {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 
     .reveal-delay-100 { transition-delay: 100ms; }

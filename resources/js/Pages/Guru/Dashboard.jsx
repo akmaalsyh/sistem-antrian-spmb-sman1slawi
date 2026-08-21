@@ -85,7 +85,7 @@ export default function Dashboard({
 
     return (
         <GuruLayout>
-            <Head title="Dashboard Guru - SPMB SMAN 1 Slawi" />
+            <Head title="Dashboard Guru / Verifikator" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
