@@ -32,7 +32,7 @@ export default function Login({ status }) {
     };
 
     return (
-        <AuthLayout title="Masuk Akun Siswa" subtitle="PORTAL RESMI SPMB 2027/2028">
+        <AuthLayout title="Masuk Akun Siswa" subtitle="PORTAL RESMI SPMB SMAN 1 SLAWI">
             <Head title="Masuk Siswa - Portal SPMB SMAN 1 Slawi" />
 
             {status && (

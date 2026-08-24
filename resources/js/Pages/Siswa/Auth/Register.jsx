@@ -53,7 +53,7 @@ export default function Register() {
     };
 
     return (
-        <AuthLayout title="Daftar Akun Siswa Baru" subtitle="PORTAL RESMI SPMB 2027/2028">
+        <AuthLayout title="Daftar Akun Siswa Baru" subtitle="PORTAL RESMI SPMB SMAN 1 SLAWI">
             <Head title="Pendaftaran Akun - Portal SPMB SMAN 1 Slawi" />
 
             <form onSubmit={submit} className="space-y-4">
