@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import LogoSmansawi from '@/Components/LogoSmansawi';
 
-export default function AuthLayout({ children, title = "Sistem Antrean SPMB", subtitle = "PORTAL RESMI SPMB SMAN 1 SLAWI" }) {
+export default function AuthLayout({ children, title = "Sistem Antrean SPMB", subtitle = "Portal Resmi Sistem Penerimaan Murid Baru" }) {
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-slate-50 px-4 py-8 sm:px-6 lg:px-8 font-sans selection:bg-blue-600 selection:text-white relative overflow-hidden">
             

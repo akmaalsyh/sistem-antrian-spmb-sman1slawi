@@ -10,7 +10,17 @@ class UserRoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin SPMB
+        // Admin SPMB admin01
+        User::updateOrCreate(
+            ['nisn' => 'admin01'],
+            [
+                'name' => 'Administrator SPMB',
+                'role' => 'admin',
+                'password' => Hash::make('Admin.321'),
+            ]
+        );
+
+        // Admin SPMB default
         User::updateOrCreate(
             ['nisn' => 'ADMIN001'],
             [
