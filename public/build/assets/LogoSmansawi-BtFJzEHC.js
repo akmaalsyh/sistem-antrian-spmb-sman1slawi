@@ -1,0 +1,1 @@
+import{t as e}from"./app-Bb1p2UGR.js";var t=e();function n({className:e=`w-12 h-12`}){return(0,t.jsx)(`img`,{src:`/logo-smansawi-asli.png`,alt:`Logo Resmi SMAN 1 Slawi`,className:`${e} object-contain`})}export{n as t};
