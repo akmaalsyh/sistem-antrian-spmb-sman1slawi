@@ -7,7 +7,8 @@
         <title inertia>{{ config('app.name', 'SPMB SMAN 1 Slawi') }}</title>
 
         <!-- Favicon SMAN 1 Slawi -->
-        <link rel="icon" type="image/png" href="/logo-smansawi-asli.png">
+        <link rel="icon" type="image/png" href="{{ asset('logo-smansawi-asli.png') }}?v=2">
+        <link rel="shortcut icon" type="image/png" href="{{ asset('logo-smansawi-asli.png') }}?v=2">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
